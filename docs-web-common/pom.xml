@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>com.sismics.docs</groupId>
@@ -8,11 +8,18 @@
     <version>1.12-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <modelVersion>4.0.0</modelVersion>
   <artifactId>docs-web-common</artifactId>
   <packaging>jar</packaging>
   <name>Docs Web Commons</name>
+
+  <distributionManagement>
+    <site>
+      <id>local</id>
+      <url>file:${project.build.directory}/site</url>
+    </site>
+  </distributionManagement>
 
   <dependencies>
     <!-- Dependencies to Docs -->
@@ -20,7 +27,7 @@
       <groupId>com.sismics.docs</groupId>
       <artifactId>docs-core</artifactId>
     </dependency>
-    
+
     <!-- Dependencies to Jersey -->
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
@@ -31,13 +38,13 @@
       <groupId>org.glassfish.jersey.media</groupId>
       <artifactId>jersey-media-json-processing</artifactId>
     </dependency>
-      
+
     <!-- Other external dependencies -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -47,12 +54,12 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-  
+
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
@@ -74,7 +81,7 @@
       <artifactId>java-jwt</artifactId>
       <version>4.4.0</version>
     </dependency>
-    
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -113,7 +120,7 @@
     </dependency>
 
   </dependencies>
-  
+
   <!-- Install test jar -->
   <build>
     <plugins>

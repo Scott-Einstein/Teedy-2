@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>com.sismics.docs</groupId>
@@ -13,6 +13,13 @@
   <artifactId>docs-core</artifactId>
   <packaging>jar</packaging>
   <name>Docs Core</name>
+
+  <distributionManagement>
+    <site>
+      <id>local</id>
+      <url>file:${project.build.directory}/site</url>
+    </site>
+  </distributionManagement>
 
   <dependencies>
     <!-- Persistence layer dependencies -->
@@ -195,6 +202,17 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.14.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
