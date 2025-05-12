@@ -1,0 +1,20 @@
+<ruleset name="CS304 rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Customized rules for CS304
+    </description>
+
+    <!--LOC-->
+    <rule ref="category/java/design.xml/NcssCount" />
+    <!--CC-->
+    <rule ref="category/java/design.xml/CyclomaticComplexity" />
+    <!--WMC, LCOM-->
+    <rule ref="category/java/design.xml/GodClass" />
+    <!--CBO-->
+    <rule ref="category/java/design.xml/CouplingBetweenObjects" />
+
+
+</ruleset>

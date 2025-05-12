@@ -198,14 +198,21 @@
             </configuration>
           </plugin>
 
-          <plugin>
+          <!-- <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <forkCount>1</forkCount>
               <reuseForks>false</reuseForks>
             </configuration>
-          </plugin>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.surefire</groupId>
+                <artifactId>surefire-junit47</artifactId>
+                <version>3.5.3</version>
+              </dependency>
+            </dependencies>
+          </plugin> -->
         </plugins>
       </build>
     </profile>
@@ -275,6 +282,7 @@
               <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
             </configuration>
           </plugin>
+
         </plugins>
       </build>
     </profile>
