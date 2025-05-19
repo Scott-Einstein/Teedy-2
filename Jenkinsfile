@@ -33,7 +33,7 @@ pipeline {
         stage('Upload image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
                         // Push the image to Docker Hub
                         docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
                         // Optional: Label latest
