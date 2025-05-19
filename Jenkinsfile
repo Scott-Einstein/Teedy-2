@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
-        DOCKER_IMAGE = "scotteinsteinwu/myapp"
+        DOCKER_IMAGE = "scotteinsteinwu/teedy-app"
         DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
 
@@ -33,7 +33,7 @@ pipeline {
         stage('Upload image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
                         // Push the image to Docker Hub
                         docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
                         // Optional: Label latest
