@@ -1,53 +1,65 @@
 pipeline {
     agent any
-    stages {
-        stage('Clean') {
-            steps {
-                sh 'mvn clean'
-            }
-        }
-        stage('Compile') {
-            steps {
-                sh 'mvn compile'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'mvn test -Dmaven.test.failure.ignore=true'
-            }
-        }
-        stage('PMD') {
-            steps {
-                sh 'mvn pmd:pmd'
-            }
-        }
-        stage('JaCoCo') {
-            steps {
-                sh 'mvn jacoco:report'
-            }
-        }
-        stage('Javadoc') {
-            steps {
-                sh 'mvn javadoc:javadoc'
-            }
-        }
-        stage('Site') {
-            steps {
-                sh 'mvn site'
-            }
-        }
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
-            }
-        }
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
+        DOCKER_IMAGE = "scotteinsteinwu/myapp:${env.BUILD_ID}"
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
-    post {
-        always {
-            archiveArtifacts artifacts: '**/target/site/**/*.*', fingerprint: true
-            archiveArtifacts artifacts: '**/target/**/*.jar', fingerprint: true
-            archiveArtifacts artifacts: '**/target/**/*.war', fingerprint: true
-            junit '**/target/surefire-reports/*.xml'
+
+    stages {
+        stage('Build') {
+            steps {
+                checkout scmGit(
+                    branches: [[name: '*/master']],
+                    extensions: [],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Scott-Einstein/Teedy-2.git'
+                    ]]
+                    sh 'mvn -B -DskipTests clean package'
+                )
+            }
+        }
+
+        stage('Building image') {
+            steps {
+                script {
+                    docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
+                }
+            }
+        }
+
+        // Uploading Docker images into Docker Hub
+        stage('Upload image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') {
+                        // Push the image to Docker Hub
+                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
+                        // Optional: Label latest
+                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push('latest')
+                    }
+                }
+            }
+        }
+
+        // Running Docker container
+        stage('Run containers') {
+            steps {
+                script {
+                    // stop then remove any existing container
+                    sh 'docker stop teedy-container-8081 || true'
+                    sh 'docker rm teedy-container-8081 || true'
+
+                    // run the container
+                    docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run(
+                        '-d -p 8081:8080 --name teedy-container-8081'
+                    )
+
+                    // Optional: list all teedy-containers 
+                    sh 'docker ps --filter "name=teedy-container"'
+                }
+            }
         }
     }
  }
