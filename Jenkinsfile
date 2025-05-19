@@ -16,8 +16,8 @@ pipeline {
                     userRemoteConfigs: [[
                         url: 'https://github.com/Scott-Einstein/Teedy-2.git'
                     ]]
-                    sh 'mvn -B -DskipTests clean package'
                 )
+                    sh 'mvn -B -DskipTests clean package'
             }
         }
 
