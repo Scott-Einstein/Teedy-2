@@ -53,7 +53,7 @@ pipeline {
 
                     // run the container
                     docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run(
-                        '-d -p 8081:8080 --name teedy-container-8081'
+                        '--name teedy-container-8081 -d -p 8081:8080 '
                     )
 
                     // Optional: list all teedy-containers 
