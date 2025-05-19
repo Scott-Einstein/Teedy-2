@@ -1,65 +1,36 @@
 pipeline {
     agent any
-
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
-        DOCKER_IMAGE = "scotteinsteinwu/teedy-app"
-        DOCKER_TAG = "${env.BUILD_NUMBER}"
+        DEPLOYMENT_NAME = "hello-node"
+        CONTAINER_NAME = "docs"
+        IMAGE_NAME = "sismics/docs:latest"
     }
-
     stages {
-        stage('Build') {
+        stage('Start Minikube') {
             steps {
-                checkout scmGit(
-                    branches: [[name: '*/master']],
-                    extensions: [],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/Scott-Einstein/Teedy-2.git'
-                    ]]
-                )
-                    sh 'mvn -B -DskipTests clean package'
+                sh '''
+                    if ! minikube status | grep -q "Running"; then
+                        echo "Starting Minikube..."
+                        minikube start
+                    else
+                        echo "Minikube already running."
+                    fi
+                '''
             }
         }
-
-        stage('Building image') {
+        stage('Set Image') {
             steps {
-                script {
-                    docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}")
-                }
+                sh '''
+                    echo "Setting image for deployment..."
+                    kubectl set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${IMAGE_NAME}
+                '''
             }
         }
-
-        // Uploading Docker images into Docker Hub
-        stage('Upload image') {
+        stage('Verify') {
             steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                        // Push the image to Docker Hub
-                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
-                        // Optional: Label latest
-                        docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push('latest')
-                    }
-                }
-            }
-        }
-
-        // Running Docker container
-        stage('Run containers') {
-            steps {
-                script {
-                    // stop then remove any existing container
-                    sh 'docker stop teedy-container-8081 || true'
-                    sh 'docker rm teedy-container-8081 || true'
-
-                    // run the container
-                    docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run(
-                        '--name teedy-container-8081 -d -p 8081:8080 '
-                    )
-
-                    // Optional: list all teedy-containers 
-                    sh 'docker ps --filter "name=teedy-container"'
-                }
+                sh 'kubectl rollout status deployment/${DEPLOYMENT_NAME}'
+                sh 'kubectl get pods'
             }
         }
     }
- }
+}
