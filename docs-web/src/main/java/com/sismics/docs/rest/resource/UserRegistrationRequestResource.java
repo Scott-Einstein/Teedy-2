@@ -1,21 +1,14 @@
 package com.sismics.docs.rest.resource;
 
-import com.sismics.docs.core.constant.PermType;
 import com.sismics.docs.core.constant.UserRegistrationRequestStatus;
 import com.sismics.docs.core.dao.UserDao;
 import com.sismics.docs.core.dao.UserRegistrationRequestDao;
 import com.sismics.docs.core.model.jpa.User;
 import com.sismics.docs.core.model.jpa.UserRegistrationRequest;
-import com.sismics.docs.core.util.SecurityUtil;
-import com.sismics.docs.core.util.jpa.PaginatedList;
-import com.sismics.docs.core.util.jpa.PaginatedLists;
-import com.sismics.docs.core.util.jpa.QueryParam;
-import com.sismics.docs.core.util.jpa.SortCriteria;
 import com.sismics.docs.rest.constant.BaseFunction;
 import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
 import com.sismics.rest.exception.ServerException;
-import com.sismics.rest.util.ValidationUtil;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
@@ -50,13 +43,26 @@ public class UserRegistrationRequestResource extends BaseResource {
         if (!authenticate()) {
             // Only unauthenticated users (guests) can register
             try {
-                // Validate the input data
-                ValidationUtil.validateRequired(username, "username");
-                ValidationUtil.validateRequired(password, "password");
-                ValidationUtil.validateRequired(email, "email");
-                ValidationUtil.validateUsername(username, "username");
-                ValidationUtil.validatePassword(password, "password");
-                ValidationUtil.validateEmail(email, "email");
+                // 验证输入数据
+                if (username == null || username.isEmpty()) {
+                    throw new ClientException("ValidationError", "Username is required");
+                }
+                if (password == null || password.isEmpty()) {
+                    throw new ClientException("ValidationError", "Password is required");
+                }
+                if (email == null || email.isEmpty()) {
+                    throw new ClientException("ValidationError", "Email is required");
+                }
+
+                // 验证用户名格式
+                if (!username.matches("^[a-zA-Z0-9_]{3,50}$")) {
+                    throw new ClientException("ValidationError", "Username must be alphanumeric with 3-50 characters");
+                }
+
+                // 验证邮箱格式
+                if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                    throw new ClientException("ValidationError", "Invalid email format");
+                }
 
                 // Check if the username is already taken
                 UserDao userDao = new UserDao();
@@ -76,7 +82,10 @@ public class UserRegistrationRequestResource extends BaseResource {
                 UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
                 userRegistrationRequest.setUsername(username);
                 userRegistrationRequest.setEmail(email);
-                userRegistrationRequest.setPassword(SecurityUtil.hashPassword(password));
+
+                // 使用简单的密码哈希方法
+                String hashedPassword = com.sismics.util.PasswordUtil.hashPassword(password);
+                userRegistrationRequest.setPassword(hashedPassword);
 
                 registrationRequestDao.create(userRegistrationRequest);
 
@@ -125,29 +134,33 @@ public class UserRegistrationRequestResource extends BaseResource {
         }
         checkBaseFunction(BaseFunction.ADMIN);
 
-        // Get the requests
-        PaginatedList<UserRegistrationRequest> paginatedList = PaginatedLists.create(limit, offset);
-        SortCriteria sortCriteria = new SortCriteria(sortColumn, asc);
+        // 设置默认值
+        if (limit == null) {
+            limit = 50;
+        }
+        if (offset == null) {
+            offset = 0;
+        }
 
-        QueryParam queryParam = new QueryParam();
-        queryParam.setSearch(search);
-        queryParam.setStatus(status);
+        // 创建排序条件
+        com.sismics.docs.core.util.jpa.SortCriteria sortCriteria = null;
+        if (sortColumn != null) {
+            sortCriteria = new com.sismics.docs.core.util.jpa.SortCriteria(sortColumn, asc);
+        }
 
+        // 查询请求数据
         UserRegistrationRequestDao registrationRequestDao = new UserRegistrationRequestDao();
-//        registrationRequestDao.findByCriteria(paginatedList, queryParam, sortCriteria);
-        // 修改一下：
-        List<UserRegistrationRequest> requests = registrationRequestDao.findByCriteria(
+        List<UserRegistrationRequest> requestList = registrationRequestDao.findByCriteria(
                 offset, limit, search, status, sortCriteria
         );
-        paginatedList.setResultList(requests);
-        paginatedList.setResultCount(registrationRequestDao.count(search, status));
+        int count = registrationRequestDao.count(search, status);
 
-        // Build the response
+        // 构建响应
         JsonObjectBuilder response = Json.createObjectBuilder();
-        JsonArrayBuilder requests = Json.createArrayBuilder();
+        JsonArrayBuilder requestsArray = Json.createArrayBuilder();
 
-        for (UserRegistrationRequest request : paginatedList.getResultList()) {
-            requests.add(Json.createObjectBuilder()
+        for (UserRegistrationRequest request : requestList) {
+            requestsArray.add(Json.createObjectBuilder()
                     .add("id", request.getId())
                     .add("username", request.getUsername())
                     .add("email", request.getEmail())
@@ -157,8 +170,8 @@ public class UserRegistrationRequestResource extends BaseResource {
                     .add("notes", request.getNotes() != null ? request.getNotes() : ""));
         }
 
-        response.add("total", paginatedList.getResultCount())
-                .add("requests", requests);
+        response.add("total", count)
+                .add("requests", requestsArray);
 
         return Response.ok().entity(response.build()).build();
     }
@@ -197,11 +210,15 @@ public class UserRegistrationRequestResource extends BaseResource {
         user.setPassword(request.getPassword()); // Password is already hashed
         user.setEmail(request.getEmail());
         user.setCreateDate(new Date());
-        user.setLocale(getLocale());
+
+        // 设置默认语言为英语 (取消使用getLocale方法)
+        String defaultLocale = "en";
+        user.setStorage(0L);
 
         try {
             // Create the user
-            userDao.create(user, null);
+            // 使用不带第二个参数的create方法
+            userDao.create(user);
 
             // Update the request status
             registrationRequestDao.approve(id);
