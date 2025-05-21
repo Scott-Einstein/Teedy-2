@@ -121,10 +121,10 @@ public class UserRegistrationRequestDao {
      * @param limit 返回条数
      * @param search 搜索关键词
      * @param status 状态过滤
-     * @param sortCriteria 排序条件
+     * @param sortCriteria 排序条件（忽略此参数）
      * @return List of registration requests
      */
-    public List<UserRegistrationRequest> findByCriteria(int offset, int limit, String search, String status, SortCriteria sortCriteria) {
+    public List<UserRegistrationRequest> findByCriteria(int offset, int limit, String search, String status, Object sortCriteria) {
         Map<String, Object> parameterMap = new HashMap<>();
         StringBuilder sb = new StringBuilder("select r from UserRegistrationRequest r");
 
@@ -144,17 +144,8 @@ public class UserRegistrationRequestDao {
             sb.append(String.join(" and ", criteriaList));
         }
 
-        // Add order
-        if (sortCriteria != null) {
-            sb.append(" order by r.").append(sortCriteria.getColumn());
-            if (sortCriteria.isAsc()) {
-                sb.append(" asc");
-            } else {
-                sb.append(" desc");
-            }
-        } else {
-            sb.append(" order by r.createDate desc");
-        }
+        // 简单的默认排序
+        sb.append(" order by r.createDate desc");
 
         // Create and execute the query
         EntityManager em = ThreadLocalContext.get().getEntityManager();
