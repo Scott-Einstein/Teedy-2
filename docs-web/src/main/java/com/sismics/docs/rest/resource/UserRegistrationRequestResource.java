@@ -10,6 +10,7 @@ import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
 import com.sismics.rest.exception.ServerException;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
@@ -17,6 +18,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User registration request REST resources.
@@ -114,8 +116,11 @@ public class UserRegistrationRequestResource extends BaseResource {
      * @return 哈希后的密码
      */
     private String hashPassword(String password) {
-        // 简单实现，实际项目中应使用更安全的方法
-        return org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
+        // 不再使用SHA-256哈希
+        // return org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
+        
+        // 改用BCrypt哈希，与UserDao中的验证一致
+        return BCrypt.withDefaults().hashToString(12, password.toCharArray());
     }
 
     /**
@@ -213,7 +218,10 @@ public class UserRegistrationRequestResource extends BaseResource {
         UserDao userDao = new UserDao();
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword()); // Password is already hashed
+        // 修改这一行 - 不直接使用哈希后的密码
+        // 创建一个临时密码并设置到user对象，让UserDao内部进行正确的哈希处理
+        String tempPassword = UUID.randomUUID().toString();
+        user.setPassword(tempPassword);
         user.setEmail(request.getEmail());
         user.setCreateDate(new Date());
         user.setRoleId("user");
@@ -224,10 +232,15 @@ public class UserRegistrationRequestResource extends BaseResource {
 
         // 使用合适的create方法并传递所需参数
         try {
-            // 使用当前管理员的ID作为创建者
-            userDao.create(user, principal.getId());
+            // 创建用户时会使用BCrypt对密码进行哈希
+            String userId = userDao.create(user, principal.getId());
             
-            // Update the request status
+            // 使用更新方法设置与注册请求相同的密码哈希值
+            user = userDao.getById(userId);
+            user.setPassword(request.getPassword());
+            userDao.updateHashedPassword(user);
+            
+            // 更新请求状态
             registrationRequestDao.approve(id);
             
             // Always return OK
