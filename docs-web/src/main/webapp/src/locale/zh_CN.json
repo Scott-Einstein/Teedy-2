@@ -14,7 +14,24 @@
     "password_lost_sent_title": "密码重置邮件已发送",
     "password_lost_sent_message": "重置密码的邮件已经发送至<strong>{{ username }}</strong>",
     "password_lost_error_title": "密码重置出错",
-    "password_lost_error_message": "无法发送密码重置邮件，请联系您的管理员进行手动重置"
+    "password_lost_error_message": "无法发送密码重置邮件，请联系您的管理员进行手动重置",
+    
+    "info_title": "简单易用的文档管理",
+    "info_description": "Teedy是一个开源文档管理系统，帮助您安全地组织、存储和共享文档。",
+    
+    "feature1_title": "高级搜索",
+    "feature1_description": "通过强大的全文搜索引擎快速找到任何文档。",
+    
+    "feature2_title": "安全存储",
+    "feature2_description": "使用企业级安全保护您的敏感文档。",
+    
+    "feature3_title": "轻松共享", 
+    "feature3_description": "通过细粒度权限与团队成员或外部合作伙伴共享文档。",
+    
+    "welcome": "欢迎使用Teedy",
+    "subtitle": "请登录以继续",
+    
+    "password_lost": "忘记密码？"
   },
   "passwordlost": {
     "title": "丢失密码",

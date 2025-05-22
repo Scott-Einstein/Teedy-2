@@ -1,32 +1,103 @@
-<div class="row">
-  <div class="col-md-3 settings-menu">
-    <div class="panel panel-default">
-      <div class="panel-heading"><strong>{{ 'settings.menu_personal_settings' | translate }}</strong></div>
-      <ul class="list-group">
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.account.**' }" href="#/settings/account">{{ 'settings.menu_user_account' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.security.**' }" href="#/settings/security">{{ 'settings.menu_two_factor_auth' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.session.**' }" href="#/settings/session">{{ 'settings.menu_opened_sessions' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.fileimporter.**' }" href="#/settings/fileimporter">{{ 'settings.menu_file_importer' | translate }}</a>
+<div class="settings-container">
+  <div class="settings-sidebar">
+    <div class="settings-menu-section">
+      <h5 class="section-title">{{ 'settings.menu_personal_settings' | translate }}</h5>
+      <ul class="settings-menu">
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/account">
+            <span class="fas fa-user-circle menu-icon"></span>
+            {{ 'settings.menu_user_account' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/security">
+            <span class="fas fa-shield-alt menu-icon"></span>
+            {{ 'settings.menu_two_factor_auth' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/session">
+            <span class="fas fa-key menu-icon"></span>
+            {{ 'settings.menu_opened_sessions' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/fileimporter">
+            <span class="fas fa-file-import menu-icon"></span>
+            {{ 'settings.menu_file_importer' | translate }}
+          </a>
+        </li>
       </ul>
     </div>
-
-    <div class="panel panel-default" ng-show="isAdmin">
-      <div class="panel-heading"><strong>{{ 'settings.menu_general_settings' | translate }}</strong></div>
-      <ul class="list-group">
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.workflow.**' }" href="#/settings/workflow">{{ 'settings.menu_workflow' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.user.**' }" href="#/settings/user">{{ 'settings.menu_users' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.group.**' }" href="#/settings/group">{{ 'settings.menu_groups' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.vocabulary.**' }" href="#/settings/vocabulary">{{ 'settings.menu_vocabularies' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.config.**' }" href="#/settings/config">{{ 'settings.menu_configuration' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.metadata.**' }" href="#/settings/metadata">{{ 'settings.menu_metadata' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.inbox.**' }" href="#/settings/inbox">{{ 'settings.menu_inbox' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.ldap.**' }" href="#/settings/ldap">{{ 'settings.menu_ldap' | translate }}</a>
-        <a class="list-group-item" ui-sref-active="{ active: 'settings.monitoring.**' }" href="#/settings/monitoring">{{ 'settings.menu_monitoring' | translate }}</a>
+    
+    <div class="settings-menu-section" ng-show="isAdmin">
+      <h5 class="section-title">{{ 'settings.menu_general_settings' | translate }}</h5>
+      <ul class="settings-menu">
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/workflow">
+            <span class="fas fa-sitemap menu-icon"></span>
+            {{ 'settings.menu_workflow' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/user">
+            <span class="fas fa-users menu-icon"></span>
+            {{ 'settings.menu_users' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/registrationrequest">
+            <span class="fas fa-user-plus menu-icon"></span>
+            {{ 'settings.menu_registrationrequest' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/group">
+            <span class="fas fa-users-cog menu-icon"></span>
+            {{ 'settings.menu_groups' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/vocabulary">
+            <span class="fas fa-book-open menu-icon"></span>
+            {{ 'settings.menu_vocabularies' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/config">
+            <span class="fas fa-cogs menu-icon"></span>
+            {{ 'settings.menu_configuration' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/metadata">
+            <span class="fas fa-tags menu-icon"></span>
+            {{ 'settings.menu_metadata' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/inbox">
+            <span class="fas fa-inbox menu-icon"></span>
+            {{ 'settings.menu_inbox' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/ldap">
+            <span class="fas fa-directory menu-icon"></span>
+            {{ 'settings.menu_ldap' | translate }}
+          </a>
+        </li>
+        <li class="settings-menu-item" ui-sref-active="active">
+          <a href="#/settings/monitoring">
+            <span class="fas fa-chart-line menu-icon"></span>
+            {{ 'settings.menu_monitoring' | translate }}
+          </a>
+        </li>
       </ul>
     </div>
   </div>
-
-  <div class="col-md-9 settings-content">
+  
+  <div class="settings-content">
     <div ui-view="settings"></div>
   </div>
 </div>

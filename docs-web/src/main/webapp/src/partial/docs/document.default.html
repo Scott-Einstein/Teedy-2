@@ -117,3 +117,51 @@
 <a href class="feedback" ng-if="userInfo.base_functions.indexOf('ADMIN') != -1" ng-click="openFeedback()">
   {{ 'document.default.feedback' | translate }}
 </a>
+
+<div class="document-filters">
+  <div class="search-container">
+    <input type="text" class="form-control search-input" 
+           ng-model="search.query" 
+           placeholder="{{ 'document.default.search' | translate }}">
+    <span class="fas fa-search search-icon"></span>
+  </div>
+  
+  <div class="filter-buttons">
+    <button class="btn btn-default" ng-click="openFilter()">
+      <span class="fas fa-filter"></span> 
+      {{ 'filter' | translate }}
+    </button>
+    <button class="btn btn-primary" ng-click="addDocument()">
+      <span class="fas fa-plus"></span> 
+      {{ 'document.add' | translate }}
+    </button>
+  </div>
+</div>
+
+<div class="document-grid">
+  <div class="document-card" ng-repeat="document in documents" ng-click="viewDocument(document)">
+    <div class="document-card-header">
+      <div class="document-title">{{ document.title }}</div>
+      <div class="document-date">{{ document.create_date | date: dateFormat }}</div>
+    </div>
+    <div class="document-card-content">
+      <div class="document-description">{{ document.description | limitTo: 100 }}{{ document.description.length > 100 ? '...' : '' }}</div>
+      <div class="document-tags">
+        <span class="tag" ng-repeat="tag in document.tags">{{ tag.name }}</span>
+      </div>
+    </div>
+    <div class="document-card-footer">
+      <span class="file-count">
+        <span class="fas fa-file"></span> {{ document.file_count }}
+      </span>
+      <div class="document-actions">
+        <button class="btn btn-sm btn-default" ng-click="editDocument(document, $event)">
+          <span class="fas fa-pencil-alt"></span>
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="deleteDocument(document, $event)">
+          <span class="fas fa-trash"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

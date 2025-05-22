@@ -109,62 +109,71 @@
     <script src="app/docs/directive/Pell.js" type="text/javascript"></script>
     <script src="app/docs/directive/AddSpaceBetween.js" type="text/javascript"></script>
     <script src="app/docs/directive/InvertTextColor.js" type="text/javascript"></script>
+    <!-- 在其他控制器引用之后添加 -->
+    <script src="app/docs/controller/ModalRegistrationRequest.js" type="text/javascript"></script>
+    <script src="app/docs/controller/settings/SettingsRegistrationRequest.js" type="text/javascript"></script>
     <!-- endref -->
   </head>
   <body translate-cloak ng-cloak>
     <onboarding-popover ng-if="onboardingEnabled" enabled="onboardingEnabled" steps="onboardingSteps"></onboarding-popover>
 
     <nav class="navbar navbar-default" role="navigation" ng-controller="Navigation">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle"
-                ng-init="isCollapsed = true"
-                ng-click="isCollapsed = !isCollapsed">
-          <span class="sr-only">{{ 'index.toggle_navigation' | translate }}</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle"
+                  ng-init="isCollapsed = true"
+                  ng-click="isCollapsed = !isCollapsed">
+            <span class="sr-only">{{ 'index.toggle_navigation' | translate }}</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
 
-        <a class="navbar-brand" href="#">
-          <span ng-if="appName == 'Teedy'">
-            <span style="color: #2aabd2;">teedy</span>
-          </span>
-          <span ng-if="appName != 'Teedy'" style="color: #888;">{{ appName }}</span>
-        </a>
-      </div>
+          <a class="navbar-brand" href="#">
+            <img src="../api/theme/image/logo" alt="Teedy" height="30">
+            <span ng-if="appName == 'Teedy'" class="brand-text">
+              <span class="primary-text">teedy</span>
+            </span>
+            <span ng-if="appName != 'Teedy'" class="brand-text">{{ appName }}</span>
+          </a>
+        </div>
 
-      <div class="collapse navbar-collapse" uib-collapse="isCollapsed">
-        <ul class="nav navbar-nav" ng-show="!userInfo.anonymous">
-          <li ui-sref-active="{ active: 'document.**' }">
-            <a href="#/document"><span class="fas fa-book"></span> {{ 'index.nav_documents' | translate }}</a>
-          </li>
-          <li ui-sref-active="{ active: 'tag.**' }" id="navigation-tag">
-            <a href="#/tag"><span class="fas fa-tags"></span> {{ 'index.nav_tags' | translate }}</a>
-          </li>
-          <li ui-sref-active="{ active: 'user.**', active2: 'group.**' }">
-            <a href="#/user"><span class="fas fa-user"></span> {{ 'index.nav_users_groups' | translate }}</a>
-          </li>
-        </ul>
+        <div class="collapse navbar-collapse" uib-collapse="isCollapsed">
+          <ul class="nav navbar-nav" ng-show="!userInfo.anonymous">
+            <li ui-sref-active="{ active: 'document.**' }">
+              <a href="#/document" class="nav-item">
+                <span class="fas fa-book nav-icon"></span> 
+                <span class="nav-label">{{ 'index.nav_documents' | translate }}</span>
+              </a>
+            </li>
+            <li ui-sref-active="{ active: 'tag.**' }" id="navigation-tag">
+              <a href="#/tag"><span class="fas fa-tags"></span> {{ 'index.nav_tags' | translate }}</a>
+            </li>
+            <li ui-sref-active="{ active: 'user.**', active2: 'group.**' }">
+              <a href="#/user"><span class="fas fa-user"></span> {{ 'index.nav_users_groups' | translate }}</a>
+            </li>
+          </ul>
 
-        <ul class="nav navbar-nav navbar-right" ng-show="!userInfo.anonymous">
-          <li>
-            <a href="{{ userInfo.username == 'guest' ? '#/user/guest' : '#/settings/account' }}"
-               translate-attr="{ title: 'index.logged_as' }" translate-values="{ username: userInfo.username }">
-              <span class="fas fa-user"></span>
-              {{ userInfo.username }}
-            </a>
-          </li>
-          <li ui-sref-active="{ active: 'settings.**' }" ng-show="userInfo.username != 'guest'">
-            <a href="#/settings/account">
-              <span class="fas fa-cog"></span> {{ 'index.nav_settings' | translate }}
-            </a>
-          </li>
-          <li>
-            <a href="#" ng-click="logout($event)">
-              <span class="fas fa-power-off"></span> {{ 'index.logout' | translate }}
-            </a>
-          </li>
-        </ul>
+          <ul class="nav navbar-nav navbar-right" ng-show="!userInfo.anonymous">
+            <li>
+              <a href="{{ userInfo.username == 'guest' ? '#/user/guest' : '#/settings/account' }}"
+                 translate-attr="{ title: 'index.logged_as' }" translate-values="{ username: userInfo.username }">
+                <span class="fas fa-user"></span>
+                {{ userInfo.username }}
+              </a>
+            </li>
+            <li ui-sref-active="{ active: 'settings.**' }" ng-show="userInfo.username != 'guest'">
+              <a href="#/settings/account">
+                <span class="fas fa-cog"></span> {{ 'index.nav_settings' | translate }}
+              </a>
+            </li>
+            <li>
+              <a href="#" ng-click="logout($event)">
+                <span class="fas fa-power-off"></span> {{ 'index.logout' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
     

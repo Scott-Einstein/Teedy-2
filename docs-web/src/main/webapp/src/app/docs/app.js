@@ -253,6 +253,16 @@ angular.module('docs',
         }
       }
     })
+    // 在settings路由配置的子路由中添加
+    .state('settings.registrationrequest', {
+      url: '/registrationrequest',
+      views: {
+        'settings': {
+          templateUrl: 'partial/docs/settings.registrationrequest.html',
+          controller: 'SettingsRegistrationRequest'
+        }
+      }
+    })
     .state('document', {
       url: '/document',
       abstract: true,

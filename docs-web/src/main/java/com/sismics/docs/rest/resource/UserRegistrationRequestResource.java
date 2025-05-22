@@ -216,15 +216,20 @@ public class UserRegistrationRequestResource extends BaseResource {
         user.setPassword(request.getPassword()); // Password is already hashed
         user.setEmail(request.getEmail());
         user.setCreateDate(new Date());
+        user.setRoleId("user");
+        // 添加必要的属性
+        user.setStorageQuota(10000000000L); // 设置默认存储配额 10GB
+        user.setStorageCurrent(0L); // 设置当前存储使用量
+        user.setOnboarding(true); // 设置初始引导状态
 
         // 使用合适的create方法并传递所需参数
         try {
-            // 传递null作为第二个参数
-            userDao.create(user, null);
-
+            // 使用当前管理员的ID作为创建者
+            userDao.create(user, principal.getId());
+            
             // Update the request status
             registrationRequestDao.approve(id);
-
+            
             // Always return OK
             JsonObjectBuilder response = Json.createObjectBuilder()
                     .add("status", "ok");

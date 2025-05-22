@@ -1,0 +1,100 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1>{{ 'settings.registrationrequest.title' | translate }}</h1>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="search" placeholder="{{ 'filter' | translate }}">
+          <span class="input-group-btn">
+            <select class="form-control" ng-model="status">
+              <option value="">{{ 'settings.registrationrequest.all_status' | translate }}</option>
+              <option value="PENDING">{{ 'settings.registrationrequest.status.pending' | translate }}</option>
+              <option value="APPROVED">{{ 'settings.registrationrequest.status.approved' | translate }}</option>
+              <option value="REJECTED">{{ 'settings.registrationrequest.status.rejected' | translate }}</option>
+            </select>
+          </span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div ng-if="requests.length === 0" class="text-center">
+          <span class="fas fa-info-circle"></span> {{ 'settings.registrationrequest.no_requests' | translate }}
+        </div>
+        
+        <table class="table" ng-show="requests.length > 0">
+          <thead>
+            <tr>
+              <th>{{ 'settings.registrationrequest.username' | translate }}</th>
+              <th>{{ 'settings.registrationrequest.email' | translate }}</th>
+              <th>{{ 'settings.registrationrequest.date' | translate }}</th>
+              <th>{{ 'settings.registrationrequest.status_label' | translate }}</th>
+              <th>{{ 'settings.registrationrequest.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="request in requests">
+              <td>{{ request.username }}</td>
+              <td>{{ request.email }}</td>
+              <td>{{ request.create_date | date:'medium' }}</td>
+              <td>
+                <span class="label" ng-class="{
+                  'label-warning': request.status === 'PENDING',
+                  'label-success': request.status === 'APPROVED',
+                  'label-danger': request.status === 'REJECTED'
+                }">
+                  {{ 'settings.registrationrequest.status.' + request.status.toLowerCase() | translate }}
+                </span>
+              </td>
+              <td>
+                <button ng-if="request.status === 'PENDING'" class="btn btn-xs btn-success" ng-click="approve(request)">
+                  <span class="fas fa-check"></span> {{ 'settings.registrationrequest.approve' | translate }}
+                </button>
+                <button ng-if="request.status === 'PENDING'" class="btn btn-xs btn-danger" ng-click="reject(request)">
+                  <span class="fas fa-times"></span> {{ 'settings.registrationrequest.reject' | translate }}
+                </button>
+                <button class="btn btn-xs btn-default" ng-click="delete(request)">
+                  <span class="fas fa-trash"></span> {{ 'delete' | translate }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-footer">
+        <div class="row">
+          <div class="col-md-4">
+            <span class="input-group-btn">
+              <select class="form-control" ng-model="limit" ng-options="limit for limit in [10, 20, 50, 100]">
+              </select>
+            </span>
+          </div>
+          <div class="col-md-8">
+            <ul class="pagination pagination-sm pull-right">
+              <li ng-class="{ disabled: currentPage === 0 }">
+                <a href ng-click="loadPage(0)">«</a>
+              </li>
+              <li ng-class="{ disabled: currentPage === 0 }">
+                <a href ng-click="loadPage(currentPage - 1)">‹</a>
+              </li>
+              <li ng-repeat="i in getPageArray()"
+                  ng-class="{ active: currentPage === i }">
+                <a href ng-click="loadPage(i)">{{ i + 1 }}</a>
+              </li>
+              <li ng-class="{ disabled: currentPage === totalPages - 1 }">
+                <a href ng-click="loadPage(currentPage + 1)">›</a>
+              </li>
+              <li ng-class="{ disabled: currentPage === totalPages - 1 }">
+                <a href ng-click="loadPage(totalPages - 1)">»</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

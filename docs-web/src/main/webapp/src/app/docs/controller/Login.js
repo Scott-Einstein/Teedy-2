@@ -75,4 +75,13 @@ angular.module('docs').controller('Login', function(Restangular, $scope, $rootSc
       });
     });
   };
+
+  // 在openPasswordLost方法后面、控制器结束前添加
+  // Registration request
+  $scope.openRegistrationModal = function() {
+    $uibModal.open({
+      templateUrl: 'partial/docs/modalRegistrationRequest.html',
+      controller: 'ModalRegistrationRequest'
+    });
+  };
 });

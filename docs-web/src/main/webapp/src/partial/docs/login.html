@@ -24,65 +24,170 @@
     font-size: 90%;
     color: #666;
   }
+
+  .login-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .login-card {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .login-logo {
+    max-width: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .login-subtitle {
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .login-form {
+    margin-top: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .input-group-addon {
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+  }
+
+  .input-group .form-control {
+    border-left: 0;
+  }
+
+  .password-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .forgot-link {
+    font-size: 0.875rem;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .forgot-link:hover {
+    text-decoration: underline;
+  }
+
+  .login-actions {
+    margin-top: 1.5rem;
+  }
+
+  .feature-item {
+    margin-bottom: 1rem;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    color: #007bff;
+    margin-right: 0.5rem;
+  }
 </style>
-<div class="row vertical-center">
-  <div class="col-sm-6 col-xs-12 login-box">
-    <div class="row">
-      <div class="col-lg-offset-4 col-lg-4 col-xs-offset-1 col-xs-10">
-        <img src="img/title.png" class="img-responsive" />
-
-        <form>
-          <div class="form-group">
-            <label class="sr-only" for="inputUsername">{{ 'login.username' | translate }}</label>
-            <input class="form-control" type="text" id="inputUsername" name="username"
-                   ng-attr-placeholder="{{ 'login.username' | translate }}" ng-model="user.username" />
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <img src="../api/theme/image/logo" alt="Teedy" class="login-logo">
+      <h3 class="login-title">{{ 'login.welcome' | translate }}</h3>
+      <p class="login-subtitle">{{ 'login.subtitle' | translate }}</p>
+    </div>
+    
+    <div class="login-form">
+      <form novalidate name="loginForm" role="form">
+        <div class="form-group">
+          <label for="inputUsername" class="control-label">{{ 'login.username' | translate }}</label>
+          <div class="input-group">
+            <span class="input-group-addon"><span class="fas fa-user"></span></span>
+            <input name="username" type="text" id="inputUsername" required class="form-control" 
+                   placeholder="{{ 'login.username' | translate }}" ng-model="user.username" autocomplete="username" autofocus>
           </div>
-
-          <div class="form-group">
-            <label class="sr-only" for="inputPassword">{{ 'login.password' | translate }}</label>
-            <input class="form-control" type="password" id="inputPassword" name="password"
-                   ng-attr-placeholder="{{ 'login.password' | translate }}" ng-model="user.password" />
+        </div>
+        
+        <div class="form-group">
+          <div class="password-header">
+            <label for="inputPassword" class="control-label">{{ 'login.password' | translate }}</label>
+            <a href ng-click="openPasswordLost()" class="forgot-link">{{ 'login.password_lost' | translate }}</a>
           </div>
-
-          <span class="help-block" ng-if="codeRequired">
-            {{ 'login.validation_code_required' | translate }}
-            <span class="fas fa-question-circle" title="{{ 'login.validation_code_title' | translate }}"></span>
-          </span>
-          <div class="form-group" ng-if="codeRequired">
-            <label class="sr-only" for="inputCode">{{ 'login.validation_code' | translate }}</label>
-            <input class="form-control" type="text" id="inputCode" name="code"
-                   ng-attr-placeholder="{{ 'login.validation_code' | translate }}" ng-model="user.code" />
+          <div class="input-group">
+            <span class="input-group-addon"><span class="fas fa-lock"></span></span>
+            <input name="password" type="password" id="inputPassword" required class="form-control" 
+                   placeholder="{{ 'login.password' | translate }}" ng-model="user.password" autocomplete="current-password">
           </div>
-
-          <div class="checkbox text-muted">
-            <label>
-              <input type="checkbox" ng-model="user.remember" name="remember" /> {{ 'login.remember_me' | translate }}
-            </label>
+        </div>
+        
+        <div class="form-group" ng-show="codeRequired">
+          <label for="inputCode" class="control-label">{{ 'login.validation_code' | translate }}</label>
+          <div class="input-group">
+            <span class="input-group-addon"><span class="fas fa-shield-alt"></span></span>
+            <input name="code" type="text" id="inputCode" class="form-control" 
+                   placeholder="{{ 'login.validation_code' | translate }}" ng-model="user.code">
           </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <button type="submit" class="btn btn-primary" ng-click="login()">
-                <span class="fas fa-check"></span> {{ 'login.submit' | translate }}
-              </button>
-            </div>
-
-            <div class="col-md-6 text-right btn-password-lost">
-              <div class="well-sm">
-                <a href ng-click="openPasswordLost()">{{ 'login.password_lost_btn' | translate }}</a>
-              </div>
-            </div>
-          </div>
-
-          <p class="text-center" ng-if="app.guest_login">&nbsp;</p>
-
-          <button type="submit" class="btn btn-default btn-block" ng-if="app.guest_login" ng-click="loginAsGuest()">
+        </div>
+        
+        <div class="login-actions">
+          <button type="submit" class="btn btn-primary btn-block" ng-click="login()" ng-disabled="!loginForm.$valid">
+            <span class="fas fa-sign-in-alt"></span> {{ 'login.submit' | translate }}
+          </button>
+          
+          <button type="button" class="btn btn-default btn-block" ng-if="app.guest_login" ng-click="loginAsGuest()">
             <span class="fas fa-user"></span> {{ 'login.login_as_guest' | translate }}
           </button>
-        </form>
+          
+          <button type="button" class="btn btn-default btn-block" ng-click="openRegistrationModal()">
+            <span class="fas fa-user-plus"></span> {{ 'login.register_request' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="login-info-container">
+    <div class="login-info">
+      <h2>{{ 'login.info_title' | translate }}</h2>
+      <p>{{ 'login.info_description' | translate }}</p>
+      
+      <div class="login-features">
+        <div class="feature-item">
+          <span class="fas fa-search feature-icon"></span>
+          <h4>{{ 'login.feature1_title' | translate }}</h4>
+          <p>{{ 'login.feature1_description' | translate }}</p>
+        </div>
+        <div class="feature-item">
+          <span class="fas fa-lock feature-icon"></span>
+          <h4>{{ 'login.feature2_title' | translate }}</h4>
+          <p>{{ 'login.feature2_description' | translate }}</p>
+        </div>
+        <div class="feature-item">
+          <span class="fas fa-share-alt feature-icon"></span>
+          <h4>{{ 'login.feature3_title' | translate }}</h4>
+          <p>{{ 'login.feature3_description' | translate }}</p>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="login-img-container col-sm-6 hidden-xs"></div>
 </div>
